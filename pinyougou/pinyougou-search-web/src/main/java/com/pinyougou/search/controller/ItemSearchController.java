@@ -13,7 +13,7 @@ import java.util.Map;
 @RequestMapping("/itemSearch")
 public class ItemSearchController {
 
-    @Reference
+    @Reference(timeout = 5000000)
     private ItemSearchService itemSearchService;
 
     @RequestMapping("/search")
