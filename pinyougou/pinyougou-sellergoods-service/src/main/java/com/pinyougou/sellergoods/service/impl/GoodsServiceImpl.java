@@ -217,7 +217,7 @@ public class GoodsServiceImpl implements GoodsService {
 		TbGoodsExample example=new TbGoodsExample();
 		Criteria criteria = example.createCriteria();
 		//指定条件为未逻辑删除
-        criteria.andAuditStatusIsNotNull();
+        criteria.andIsDeleteIsNull();
 		
 		if(goods!=null){			
 			if(goods.getSellerId()!=null && goods.getSellerId().length()>0){
