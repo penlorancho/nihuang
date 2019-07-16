@@ -153,6 +153,8 @@ public class GoodsServiceImpl implements GoodsService {
 	 */
 	@Override
 	public void update(Goods goods){
+		//商品数据发生变化时，修改商品状态为"0"，则solr索引库的数据同时也会被删除,这样就不会出现数据库数据发生变化，而索引库数据未发生变化的情况
+		goods.getGoods().setAuditStatus("0");
 		//更新基本表数据
 		goodsMapper.updateByPrimaryKey(goods.getGoods());
 		//更新扩展表数据
@@ -276,6 +278,7 @@ public class GoodsServiceImpl implements GoodsService {
 	 * @param status
 	 * @return
 	 */
+	@Override
 	public List<TbItem> findItemListByGoodsIdListAndStatus(Long[] goodsIds,String status){
 		TbItemExample example = new TbItemExample();
 		TbItemExample.Criteria criteria = example.createCriteria();

@@ -175,7 +175,7 @@ public class GoodsController {
 	 * @return
 	 */
 	@RequestMapping("/updateStatus")
-	public Result updateStatus(Long[] ids, String status) {
+	public Result updateStatus(final Long[] ids, String status) {
 		try {
 			goodsService.updateStatus(ids,status);
 			if ("1".equals(status)) {
