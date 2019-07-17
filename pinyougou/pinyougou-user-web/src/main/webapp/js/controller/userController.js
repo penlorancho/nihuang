@@ -25,10 +25,10 @@ app.controller('userController' ,function($scope,$controller   ,userService){
 			return;
 		}
 		//防止通过前端抓包，直接获得页面地址
-		if (!reg_telephone.test($scope.entity.phone)){
+		/*if (!reg_telephone.test($scope.entity.phone)){
 			alert("您输入的手机格式有误，请重新输入");
 			return;
-		}
+		}*/
 		userService.sendCode($scope.entity.phone).success(
 			function (response) {
 				alert(response.message);
