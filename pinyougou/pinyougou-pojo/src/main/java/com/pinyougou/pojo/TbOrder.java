@@ -9,7 +9,7 @@ public class TbOrder implements Serializable {
 
     private BigDecimal payment;
 
-    private String paymentType;
+    private String paymentType;//'1'是微信支付 '2'是货到支付
 
     private String postFee;
 
