@@ -66,5 +66,13 @@ public interface OrderService {
 	 * @return
 	 */
 	public TbPayLog searchPayLogFromRedis(String useId);
+
+
+	/**
+	 * 支付成功修改状态
+	 * @param out_trade_no
+	 * @param transactionId
+	 */
+	public void updateOrderStatus(String out_trade_no,String transactionId);
 	
 }

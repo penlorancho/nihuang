@@ -115,8 +115,8 @@ public class OrderServiceImpl implements OrderService {
 			payLog.setCreateTime(new Date());
 			payLog.setUserId(order.getUserId());//用户id
 			//订单id串
-			payLog.setOrderList(orderIdList+"".replace("[","").replace("]",""));
-			payLog.setTotalFee((long)total_money*100);//金额（分）
+			payLog.setOrderList((orderIdList+"").replace("[","").replace("]",""));
+			payLog.setTotalFee((long)(total_money*100));//金额（分）
 			payLog.setTradeState("0");//交易状态
 			payLog.setPayType("1");//支付类型
 			payLogMapper.insert(payLog);
@@ -225,6 +225,27 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public TbPayLog searchPayLogFromRedis(String useId) {
 		return (TbPayLog) redisTemplate.boundHashOps("payLog").get(useId);
+	}
+
+	@Override
+	public void updateOrderStatus(String out_trade_no, String transaction_id) {
+		//1.修改支付日志的状态及相关字段
+		TbPayLog payLog = payLogMapper.selectByPrimaryKey(out_trade_no);
+		payLog.setPayTime(new Date());//支付时间
+		payLog.setTradeState("1");//交易状态：成功
+		payLog.setTransactionId(transaction_id);//微信的交易流水号
+		payLogMapper.updateByPrimaryKey(payLog);
+		//2.修改订单表的状态
+		String orderList = payLog.getOrderList();//订单id串
+		String[] orderIds = orderList.split(",");
+		for (String orderId : orderIds) {
+			TbOrder order = orderMapper.selectByPrimaryKey(Long.valueOf(orderId));
+			order.setStatus("2");//支付状态:支付成功
+			order.setPaymentTime(new Date());//支付时间
+			orderMapper.updateByPrimaryKey(order);
+		}
+		//3.清除缓存中的payLog
+		redisTemplate.boundHashOps("payLog").delete(payLog.getUserId());
 	}
 
 }
