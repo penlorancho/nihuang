@@ -95,4 +95,37 @@ public class WeixinPayServiceImpl implements WeixinPayService {
         }
 
     }
+
+    /**
+     * 支付关闭
+     * @param out_trade_no
+     * @return
+     */
+    @Override
+    public Map closePay(String out_trade_no) {
+        //1.封装参数
+        Map param = new HashMap();
+        param.put("appid",appid);
+        param.put("mch_id",partner);
+        param.put("out_trade_no",out_trade_no);
+        param.put("nonce_str",WXPayUtil.generateNonceStr());
+        try {
+            String paramXml = WXPayUtil.generateSignedXml(param, partnerkey);
+            //2.发出请求
+            //检测支付状态时，所使用的URL接口跟生成二维码的接口是不同的，注意区别
+            HttpClient httpClient = new HttpClient("https://api.mch.weixin.qq.com/pay/closeorder");
+            httpClient.setHttps(true);
+            httpClient.setXmlParam(paramXml);
+            httpClient.post();
+            //3.获取结果
+            String xmlResult = httpClient.getContent();
+            Map<String, String> map = WXPayUtil.xmlToMap(xmlResult);
+            System.out.println("调动查询API查询结果:"+xmlResult);
+            return map;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
 }
